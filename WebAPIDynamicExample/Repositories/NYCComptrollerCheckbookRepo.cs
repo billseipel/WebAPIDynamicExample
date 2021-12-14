@@ -34,7 +34,7 @@ namespace WebAPIDynamicExample.Repositories
             HttpResponseMessage response;
             using (var content = new ByteArrayContent(byteData))
             {
-                content.Headers.ContentType = new MediaTypeHeaderValue("< your content type, i.e. application/json >");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
                 response = await HttpClient.PostAsync(uri, content);
             }
             string result = String.Empty;
