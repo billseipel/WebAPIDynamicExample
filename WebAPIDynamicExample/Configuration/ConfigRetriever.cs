@@ -16,10 +16,10 @@ namespace WebAPIDynamicExample.Configuration
         {
             var config = new WebAPIDynamicExampleConfiguration()
             {
-                AuthKey         = Configuration["AuthKey"],
-                AuthValue       = Configuration["AuthValue"],
-                ThirdPartyAPI   = Configuration["ThirdPartyAPIURL"],
-                Summaries       = Configuration["Summaries"]
+                //AuthKey         = Configuration["AuthKey"],
+                //AuthValue       = Configuration["AuthValue"],
+                ThirdPartyAPI   = Configuration["ThirdPartyAPIURL"]
+                //Summaries       = Configuration["Summaries"]
             };
             return config;
         }

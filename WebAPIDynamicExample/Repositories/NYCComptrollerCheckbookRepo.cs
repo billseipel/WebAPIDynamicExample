@@ -1,11 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using WebAPIDynamicExample.Configuration;
 using WebAPIDynamicExample.Configuration.Interfaces;
@@ -18,25 +12,19 @@ namespace WebAPIDynamicExample.Repositories
         private WebAPIDynamicExampleConfiguration Config { get; set; }
         private HttpClient HttpClient { get; }
         public NYCComptrollerCheckbookRepo(IConfigRetriever configuration
-            ,HttpClient httpclient)
+            , HttpClient httpclient)
         {
             Config = configuration.Get();
             HttpClient = httpclient;
         }
-
-        public async Task<string> GetSpendingData(string body)
+        
+        public async Task<string> GetExceedFunding()
         {
-            //setup header auth
-            HttpClient.DefaultRequestHeaders.Add(Config.AuthKey, Config.AuthValue);
-            var uri = HttpClient.BaseAddress + "comptroller/api";
-            
-            byte[] byteData = Encoding.UTF8.GetBytes(body);
+            var uri = HttpClient.BaseAddress;
             HttpResponseMessage response;
-            using (var content = new ByteArrayContent(byteData))
-            {
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-                response = await HttpClient.PostAsync(uri, content);
-            }
+
+            response = await HttpClient.GetAsync(uri);
+
             string result = String.Empty;
             if (response.IsSuccessStatusCode)
             {

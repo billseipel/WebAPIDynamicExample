@@ -1,19 +1,19 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using WebAPIDynamicExample.Configuration;
-using WebAPIDynamicExample.Configuration.Interfaces;
-using WebAPIDynamicExample.Managers;
-using WebAPIDynamicExample.Managers.Interfaces;
-using WebAPIDynamicExample.Repositories;
-using WebAPIDynamicExample.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Net.Http;
 using System.Net;
+using System.Net.Http;
+using WebAPIDynamicExample.Configuration;
+using WebAPIDynamicExample.Configuration.Interfaces;
+using WebAPIDynamicExample.Managers;
+using WebAPIDynamicExample.Managers.Interfaces;
+using WebAPIDynamicExample.Repositories;
+using WebAPIDynamicExample.Repositories.Interfaces;
 
 namespace WebAPIDynamicExample
 {
@@ -48,12 +48,6 @@ namespace WebAPIDynamicExample
                 .As<IConfigRetriever>()
                 .WithParameter(new TypedParameter(typeof(IConfiguration), Configuration));
 
-            builder.RegisterType<WeatherForecastManager>()
-                .As<IWeatherForecastManager>();
-
-            builder.RegisterType<WeatherForecastRepo>()
-                .As<IWeatherForecastRepo>();
-
             builder.RegisterType<NYCSpendingDataManager>()
                .As<INYCSpendingDataManager>();
 
@@ -73,7 +67,7 @@ namespace WebAPIDynamicExample
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebAPIDynamicExample.Models;
 
 namespace WebAPIDynamicExample.Managers.Interfaces
 {
     public interface INYCSpendingDataManager
     {
-        Task<string> GetSpendingData();
+        Task<List<AccountingData>> GetExceedFunding();
     }
 }
