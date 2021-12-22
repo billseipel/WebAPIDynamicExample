@@ -4,6 +4,6 @@ namespace WebAPIDynamicExample.Repositories.Interfaces
 {
     public interface INYCComptrollerCheckbookRepo
     {
-        Task<string> GetSpendingData(string body);
+        Task<string> GetSpendingDataAsync(string body);
     }
 }
