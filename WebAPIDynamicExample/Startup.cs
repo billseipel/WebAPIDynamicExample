@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
 using System.Net;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace WebAPIDynamicExample
 {
@@ -31,7 +32,10 @@ namespace WebAPIDynamicExample
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             ContainerBuilder builder = new ContainerBuilder();
+           
             services.AddControllers();
+
+            services.AddSwaggerGen();
 
             // HttpClient singleton inst for reuse
             Uri endPointA = new Uri(Configuration["ThirdPartyAPIURL"]); // this is the endpoint HttpClient will hit
@@ -48,23 +52,25 @@ namespace WebAPIDynamicExample
                 .As<IConfigRetriever>()
                 .WithParameter(new TypedParameter(typeof(IConfiguration), Configuration));
 
-            builder.RegisterType<WeatherForecastManager>()
-                .As<IWeatherForecastManager>();
-
-            builder.RegisterType<WeatherForecastRepo>()
-                .As<IWeatherForecastRepo>();
-
             builder.RegisterType<NYCSpendingDataManager>()
                .As<INYCSpendingDataManager>();
 
             builder.RegisterType<NYCComptrollerCheckbookRepo>()
                 .As<INYCComptrollerCheckbookRepo>();
-
+            
+            
             return new AutofacServiceProvider(builder.Build());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIDynamicExample API");
+                c.RoutePrefix = "NYC/swagger";
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

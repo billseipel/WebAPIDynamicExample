@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -13,6 +14,7 @@ using WebAPIDynamicExample.Managers.Interfaces;
 using WebAPIDynamicExample.Models;
 using WebAPIDynamicExample.Properties;
 using WebAPIDynamicExample.Repositories.Interfaces;
+using WebAPIDynamicExample.Util;
 
 namespace WebAPIDynamicExample.Managers
 {
@@ -27,54 +29,59 @@ namespace WebAPIDynamicExample.Managers
             Config = config.Get();
             NYCSpendingDataRepo = nyccomptrollerRepo;
         }
-        private string LoadXmlRequest()
+        private string LoadXmlRequest(string year)
         {
-            // load the xml request
-            XmlDocument xmldoc = new XmlDocument();
-            xmldoc.LoadXml(Resources.NYC_Spending_2018);
-            StringWriter sw = new StringWriter();
-            XmlTextWriter xw = new XmlTextWriter(sw);
-            xmldoc.WriteTo(xw);
-            return sw.ToString();
-
+            return XmlBuilder.LoadSpendingXML(year);
         }
 
         private string GetSubsetofResultXml(string xmlresult)
         {
             XmlReader reader = XmlReader.Create(new StringReader(xmlresult));
             var doc = XDocument.Load(reader);
-            // these xml elements could be specific to type requested
             var subset = doc.Root.Elements("result_records")
                                     .Elements("spending_transactions");
-                                    //.Elements("transaction");
            return string.Concat(subset.Select(element => element.ToString()));
         }
 
-        public async Task<string> GetSpendingData()
+        public async Task<List<Expense>> GetSpendingData(string year)
         {
             //load the request
-            var body = LoadXmlRequest();
+            var body = LoadXmlRequest(year);
 
             //Post request
-            var xmlresult =  await NYCSpendingDataRepo.GetSpendingData(body);
+            var xmlresult =  await NYCSpendingDataRepo.GetSpendingDataAsync(body);
 
             //filter response
             var subset = GetSubsetofResultXml(xmlresult);
 
-            //Convert Response
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(subset);
-            string json = JsonConvert.SerializeXmlNode(doc);
+            if (!string.IsNullOrWhiteSpace(subset))
+            {
+                //Convert Response & serialize
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(subset);
+                string json = JsonConvert.SerializeXmlNode(doc);
 
-            //deserialize dynamic input
-            List<Transaction> tlist = new List<Transaction>();
+                //deserialize using dynamics
+                List<Expense> tlist = ConvertDataDynamically(json);
+                return tlist;
+            }
+            else
+            {
+                //no results returned.
+                return new List<Expense>();
+            }
+        }
+
+        private List<Expense> ConvertDataDynamically(string json)
+        {
+            List<Expense> tlist = new List<Expense>();
             double number;
             dynamic data = JsonConvert.DeserializeObject<ExpandoObject>(json, new ExpandoObjectConverter());
             foreach (var transaction in (data.spending_transactions.transaction))
             {
-                Transaction t = new Transaction();
+                Expense t = new Expense();
                 t.Name = transaction.agency;
-                if (double.TryParse(transaction.check_amount, out number)) 
+                if (double.TryParse(transaction.check_amount, out number))
                 {
                     t.CheckAmount = number;
                 }
@@ -82,10 +89,11 @@ namespace WebAPIDynamicExample.Managers
                 {
                     t.CheckAmount = 0;
                 }
+                t.PayeeName = transaction.payee_name;
+                
                 tlist.Add(t);
             }
-            var final = JsonConvert.SerializeObject(tlist);
-            return final;
+            return tlist;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace WebAPIDynamicExample.Repositories
             HttpClient = httpclient;
         }
 
-        public async Task<string> GetSpendingData(string body)
+        public async Task<string> GetSpendingDataAsync(string body)
         {
             //setup header auth
             HttpClient.DefaultRequestHeaders.Add(Config.AuthKey, Config.AuthValue);
