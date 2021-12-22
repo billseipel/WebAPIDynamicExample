@@ -18,8 +18,7 @@ namespace WebAPIDynamicExample.Configuration
             {
                 AuthKey         = Configuration["AuthKey"],
                 AuthValue       = Configuration["AuthValue"],
-                ThirdPartyAPI   = Configuration["ThirdPartyAPIURL"],
-                Summaries       = Configuration["Summaries"]
+                ThirdPartyAPI   = Configuration["ThirdPartyAPIURL"]               
             };
             return config;
         }
