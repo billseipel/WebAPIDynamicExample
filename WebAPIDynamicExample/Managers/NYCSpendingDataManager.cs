@@ -93,7 +93,7 @@ namespace WebAPIDynamicExample.Managers
                 
                 tlist.Add(t);
             }
-            return tlist;
+            return tlist.OrderByDescending(x => x.CheckAmount).ToList<Expense>();
         }
     }
 }

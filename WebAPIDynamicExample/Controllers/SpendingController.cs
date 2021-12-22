@@ -1,13 +1,11 @@
-﻿using WebAPIDynamicExample.Managers;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebAPIDynamicExample.Managers.Interfaces;
 using WebAPIDynamicExample.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace WebAPIDynamicExample.Controllers
 {
