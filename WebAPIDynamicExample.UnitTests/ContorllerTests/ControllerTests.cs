@@ -5,6 +5,8 @@ using WebAPIDynamicExample.Controllers;
 using WebAPIDynamicExample.Managers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using WebAPIDynamicExample.Models;
+using System.Collections.Generic;
 
 namespace WebAPIDynamicExample.UnitTests.ContorllerTests
 {
@@ -47,14 +49,32 @@ namespace WebAPIDynamicExample.UnitTests.ContorllerTests
         }
 
         [TestMethod]
-        public void GetSpendingData_NotFound()
+        public async Task GetSpendingData_NotFound()
         {
+            string badyear = "1976";
+            var result = await SpendingCon.GetSpendingData(badyear);
+            var notfoundreq = result as NotFoundResult;
+
+            Assert.IsInstanceOfType(notfoundreq, typeof(NotFoundResult));
 
         }
 
         [TestMethod]
-        public void GetSpendingData_Success()
+        public async Task GetSpendingData_Success()
         {
+            string goodyear = "2012";
+            List<Expense> e = new List<Expense>() {
+                new Expense
+                {
+                    Name="TestName", CheckAmount=100.00,  PayeeName="DeptX"
+                }
+            };
+            MockNYCSpendingDataManager.Setup(x => x.GetSpendingData(It.IsAny<string>())).Returns(Task.FromResult(e));
+
+            var result = await SpendingCon.GetSpendingData(goodyear);
+            var goodreq = result as OkObjectResult;
+
+            Assert.IsInstanceOfType(goodreq, typeof(OkObjectResult));
 
         }
 
