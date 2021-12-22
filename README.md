@@ -3,9 +3,11 @@ A .NET Core Swagger API which consumes the NYC Comptroller Checkbook, dynamicall
 
 (Please use your own subscription, which is free. I'll leave mine for now)
 NYC Comptroller Checkbook API address:
+
 https://api-portal.nyc.gov/docs/services/comptroller-check-book/operations/comptroller-api
 
 NYC Checkbook Spending documentation:
+
 https://www.checkbooknyc.com/spending-api
 
 The single (to start with) method takes a year as the single parameter and returns transactions, sorted by most expensive to least.
